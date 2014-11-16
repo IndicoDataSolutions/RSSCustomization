@@ -1,1 +1,5 @@
-Testing
+<ul>
+{% for entry in entries %}
+  <li><a href="{{ entry.link }}">{{ entry.title }}</a>{{entry.tags}}</li>
+{% endfor %}
+</ul>
