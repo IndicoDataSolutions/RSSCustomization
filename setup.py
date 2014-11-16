@@ -10,7 +10,8 @@ setup(
     url = "http://github.com/IndicoDataSolutions/RSSCustomization",
     install_requires = [
         'Flask>=0.10.1',
-        'feedparser>=5.1.3'
+        'feedparser>=5.1.3',
+        'indicoio>=0.4.10' 
     ],
     packages = find_packages()
 )
