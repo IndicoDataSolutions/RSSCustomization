@@ -9,15 +9,19 @@ app.debug = True
 
 DEFAULT = "http://www.reddit.com/.rss"
 
-def thresholded(text_tags, minimum=0.1):
-	return [category for category, prob in text_tags.items()
-	        if prob > minimum]
+def thresholded(tags, minimum):
+	return dict((category, prob) for category, prob in tags.items()
+	        	if prob > minimum)
+
+def likely_category(tags, minimum=0.1):
+	trimmed = thresholded(tags, minimum) or {'none': 0}
+	return max(trimmed, key=lambda key: trimmed[key])
 
 def parsed(entry):
 	return {
 		'title': entry['title'],
 		'link': entry['link'],
-		'tags': thresholded(text_tags(entry['title']))
+		'tag': likely_category(text_tags(entry['title']))
 	}
 
 @app.route('/')
