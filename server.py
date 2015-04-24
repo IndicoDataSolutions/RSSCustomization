@@ -1,8 +1,8 @@
-from multiprocessing.pool import ThreadPool
-
 from flask import Flask, render_template
 import feedparser
-from indicoio import text_tags
+from indicoio import batch_text_tags
+
+indicoio.config.api_key = "YOUR_API_KEY"
 
 app = Flask(__name__)
 app.debug = True
@@ -32,15 +32,18 @@ def parsed(entry):
 	return {
 		'title': entry['title'],
 		'link': entry['link'],
-		'tag': likely_tag(text_tags(entry['title']))
+		'tag': likely_tag(entry['tags'])
 	}
 
 @app.route('/')
 def main():
-	# simple threading to prevent network calls from blocking
-	pool = ThreadPool(16)
 	entries = feedparser.parse(feed)['entries']
-	entries = pool.map(parsed, entries)
+	titles = [entry.get('title') for entry in entries]
+	title_tags = batch_text_tags(titles)
+	for entry, tags in zip(entries, title_tags):
+		entry['tags'] = tags
+
+	entries = [parsed(entry) for entry in entries]
 
 	# render template with additional jinja2 data
 	return render_template('main.html', entries=entries)
