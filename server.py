@@ -1,8 +1,8 @@
 from flask import Flask, render_template
 import feedparser
-from indicoio import batch_text_tags
+from indicoio import config, batch_text_tags
 
-indicoio.config.api_key = "YOUR_API_KEY"
+config.api_key = "YOUR_API_KEY"
 
 app = Flask(__name__)
 app.debug = True
